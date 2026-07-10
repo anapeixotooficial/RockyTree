@@ -530,43 +530,62 @@
         </div>
     </footer>
 
-    <!-- Botão Flutuante e Chatbot (TreeBot) -->
+    <!-- Botão Flutuante e Chatbot (TreeBot IA 2.0) -->
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
         <!-- Chat Window -->
-        <div id="chatbot-window" class="hidden w-80 bg-cyber-dark/95 border border-cyber-green/30 rounded-2xl shadow-[0_0_30px_rgba(0,255,136,0.15)] mb-4 overflow-hidden flex-col backdrop-blur-md transition-all origin-bottom-right">
+        <div id="chatbot-window" class="hidden w-80 sm:w-96 bg-cyber-dark/95 border border-cyber-green/40 rounded-2xl shadow-[0_0_40px_rgba(0,255,136,0.2)] mb-4 overflow-hidden flex-col backdrop-blur-xl transition-all origin-bottom-right">
             <!-- Header -->
-            <div class="bg-cyber-gray/80 border-b border-cyber-green/20 p-4 flex items-center justify-between">
+            <div class="bg-cyber-gray/90 border-b border-cyber-green/20 p-3.5 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-cyber-dark border border-cyber-green flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-cyber-dark border border-cyber-green flex items-center justify-center shadow-[0_0_10px_rgba(0,255,136,0.3)]">
                         <svg class="w-4 h-4 text-cyber-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"></path></svg>
                     </div>
                     <div>
-                        <h4 class="text-white font-bold text-sm">TreeBot</h4>
-                        <p class="text-cyber-green text-[10px] flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cyber-green animate-pulse"></span> Online agora</p>
+                        <div class="flex items-center gap-1.5">
+                            <h4 class="text-white font-display font-bold text-sm">TreeBot IA</h4>
+                            <span class="text-[9px] px-1.5 py-0.2 bg-cyber-green/20 text-cyber-green rounded font-semibold border border-cyber-green/30">Llama 3.3</span>
+                        </div>
+                        <p class="text-cyber-green text-[10px] flex items-center gap-1 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyber-green animate-pulse"></span> Online agora • Respostas curtas
+                        </p>
                     </div>
                 </div>
-                <button onclick="toggleChat()" class="text-gray-400 hover:text-white">
+                <button onclick="toggleChat()" class="text-gray-400 hover:text-white p-1">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             
             <!-- Messages -->
-            <div id="chat-messages" class="p-4 h-64 overflow-y-auto flex flex-col gap-3 text-sm scroll-smooth">
-                <div class="bg-cyber-gray/50 border border-white/5 rounded-2xl rounded-tl-sm p-3 text-gray-300 max-w-[85%] shadow-sm">
-                    Olá! Sou o TreeBot. 🌲 Como posso ajudar a escalar o seu negócio com tecnologia hoje?
+            <div id="chat-messages" class="p-4 h-72 overflow-y-auto flex flex-col gap-3 text-xs md:text-sm scroll-smooth">
+                <div class="bg-cyber-gray/90 border border-white/10 rounded-2xl rounded-tl-sm p-3.5 text-gray-200 max-w-[88%] shadow-sm">
+                    Olá! Sou o <strong class="text-white">TreeBot IA</strong> 🌲 da Rocky Tree.
+                    <br><br>
+                    Estou aqui para tirar suas dúvidas de forma rápida e direta ou agendar seu atendimento no WhatsApp.
+                    <br><br>
+                    Como posso ajudar seu negócio hoje?
                 </div>
             </div>
             
-            <!-- Options -->
-            <div id="chat-options" class="p-4 pt-0 flex flex-col gap-2">
-                <button onclick="handleChatOption('orcamento')" class="w-full py-2 px-3 bg-cyber-green/10 hover:bg-cyber-green/20 border border-cyber-green/30 text-cyber-green rounded-lg text-xs font-semibold transition-colors text-left">
-                    Gostaria de um orçamento
+            <!-- Atalhos Rápidos (Pills) -->
+            <div class="px-3 py-2 bg-cyber-dark/80 border-t border-white/5 flex gap-1.5 overflow-x-auto">
+                <button onclick="sendTreebotQuickMessage('Quanto custa para criar uma Landing Page?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-cyber-green/20 text-gray-300 hover:text-cyber-green text-[11px] font-medium whitespace-nowrap transition-colors border border-white/10">
+                    💰 Preço Site/LP
                 </button>
-                <button onclick="handleChatOption('suporte')" class="w-full py-2 px-3 bg-cyber-green/10 hover:bg-cyber-green/20 border border-cyber-green/30 text-cyber-green rounded-lg text-xs font-semibold transition-colors text-left">
-                    Preciso de suporte técnico
+                <button onclick="sendTreebotQuickMessage('Preciso de suporte técnico de TI mensal')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-cyber-green/20 text-gray-300 hover:text-cyber-green text-[11px] font-medium whitespace-nowrap transition-colors border border-white/10">
+                    🖥️ Suporte TI
                 </button>
-                <button onclick="handleChatOption('contato')" class="w-full py-2 px-3 bg-cyber-green/10 hover:bg-cyber-green/20 border border-cyber-green/30 text-cyber-green rounded-lg text-xs font-semibold transition-colors text-left">
-                    Apenas tirar uma dúvida
+                <button onclick="sendTreebotQuickMessage('Quero solicitar um orçamento direto pelo WhatsApp')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-cyber-green/20 text-gray-300 hover:text-cyber-green text-[11px] font-medium whitespace-nowrap transition-colors border border-white/10">
+                    💬 WhatsApp
+                </button>
+            </div>
+
+            <!-- Input de Digitação -->
+            <div class="p-3 bg-cyber-dark border-t border-white/10 flex items-center gap-2">
+                <input type="text" id="treebot-input" placeholder="Digite sua dúvida ou pedido..." 
+                       class="flex-1 bg-cyber-gray/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyber-green transition-colors">
+                <button id="treebot-send-btn" 
+                        class="w-9 h-9 rounded-xl bg-cyber-green hover:bg-white text-cyber-dark flex items-center justify-center font-bold transition-all shadow-[0_0_15px_rgba(0,255,136,0.3)]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                 </button>
             </div>
         </div>
@@ -665,69 +684,7 @@
             }
         });
 
-        // Chatbot (TreeBot) Logic
-        const chatWindow = document.getElementById('chatbot-window');
-        const iconOpen = document.getElementById('chat-icon-open');
-        const iconClose = document.getElementById('chat-icon-close');
-
-        function toggleChat() {
-            if(chatWindow.classList.contains('hidden')) {
-                chatWindow.classList.remove('hidden');
-                chatWindow.classList.add('flex');
-                iconOpen.classList.add('hidden');
-                iconOpen.classList.remove('block');
-                iconClose.classList.remove('hidden');
-                iconClose.classList.add('block');
-            } else {
-                chatWindow.classList.add('hidden');
-                chatWindow.classList.remove('flex');
-                iconOpen.classList.remove('hidden');
-                iconOpen.classList.add('block');
-                iconClose.classList.add('hidden');
-                iconClose.classList.remove('block');
-            }
-        }
-
-        function appendUserMessage(text) {
-            const msgs = document.getElementById('chat-messages');
-            msgs.innerHTML += `<div class="self-end bg-cyber-green text-cyber-dark rounded-2xl rounded-tr-sm p-3 max-w-[85%] font-medium shadow-sm animate-[fadeIn_0.3s_ease-out]">`+text+`</div>`;
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-
-        function appendBotMessage(text, htmlContent = "") {
-            const msgs = document.getElementById('chat-messages');
-            msgs.innerHTML += `<div class="bg-cyber-gray/50 border border-white/5 rounded-2xl rounded-tl-sm p-3 text-gray-300 max-w-[85%] shadow-sm animate-[fadeIn_0.3s_ease-out]">`+text+ htmlContent +`</div>`;
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-
-        function handleChatOption(option) {
-            document.getElementById('chat-options').style.display = 'none';
-            
-            const number = "5575999999999";
-            
-            if (option === 'orcamento') {
-                appendUserMessage('Gostaria de um orçamento');
-                setTimeout(() => {
-                    appendBotMessage('Ótimo! Vou te redirecionar para o nosso WhatsApp. Lá a Ana ou o Mikaell vão montar a proposta ideal para o seu projeto.');
-                    setTimeout(() => {
-                        window.open(`https://wa.me/${number}?text=Olá,%20gostaria%20de%20um%20orçamento%20para%20um%20projeto.`, '_blank');
-                    }, 1500);
-                }, 800);
-            } else if (option === 'suporte') {
-                appendUserMessage('Preciso de suporte técnico');
-                setTimeout(() => {
-                    appendBotMessage('Certo. Para suporte rápido e eficiente, nossa equipe técnica atende via WhatsApp. Redirecionando...');
-                    setTimeout(() => {
-                        window.open(`https://wa.me/${number}?text=Olá,%20preciso%20de%20suporte%20técnico.`, '_blank');
-                    }, 1500);
-                }, 800);
-            } else if (option === 'contato') {
-                appendUserMessage('Apenas tirar uma dúvida');
-                setTimeout(() => {
-                    appendBotMessage('Sem problemas! Fique à vontade para mandar uma mensagem direta no nosso WhatsApp clicando no botão abaixo:', `<div class="mt-3"><button onclick="window.open('https://wa.me/${number}?text=Olá,%20tenho%20uma%20dúvida.', '_blank')" class="w-full px-4 py-2 bg-cyber-blue text-cyber-dark font-semibold rounded-lg text-xs hover:bg-white transition-colors">Abrir WhatsApp</button></div>`);
-                }, 800);
-            }
-        }
+        // Lógica do TreeBot IA transferida para o arquivo externo ./treebot.js
 
         // Services Data for Modal
         const servicesData = {
@@ -1033,5 +990,6 @@
             }
         });
     </script>
+    <script src="./treebot.js"></script>
 </body>
 </html>
