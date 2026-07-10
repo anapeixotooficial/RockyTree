@@ -36,20 +36,6 @@ Este site não é apenas um cartão de visitas, é uma ferramenta de alta conver
 
 ---
 
-## ⚙️ Como executar localmente
-
-Como o projeto foi desenvolvido focado em performance sem a dependência de frameworks pesados de compilação, é extremamente fácil rodá-lo:
-
-1. Faça o clone do repositório:
-   ```bash
-   git clone https://github.com/anapeixotooficial/RockyTree.git
-   ```
-2. Abra a pasta do projeto.
-3. Você pode simplesmente dar um duplo clique no arquivo `index.html` para rodar direto no navegador.
-4. **Recomendação DEV:** Para rodar com um servidor local e testar sem bloqueios de CORS, abra a pasta no VS Code e utilize a extensão **Live Server**.
-
----
-
 ## 👥 Quem Somos
 
 A **Rocky Tree** é liderada por especialistas com domínio de ponta a ponta na área de TI:
