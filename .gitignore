@@ -21,5 +21,7 @@ Thumbs.db
 .vscode/
 *.log
 
-# Pastas de teste locais
+# Pastas de teste locais e estudos externos (não enviar ao GitHub)
 teste-treebot-ia/
+laboratorio-ia-libs/
+
