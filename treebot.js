@@ -3,14 +3,13 @@
  * TREEBOT IA 3.0 - ASSISTENTE VIRTUAL ROCKY TREE TECHNOLOGIES
  * ============================================================================
  * Design Tech Minimalist, Dark UI com acentos Neon.
- * Suporte a proxy confidencial (Groq) e motor local de conhecimento integrado
- * para alta conversão e sigilo total da chave de API.
+ * Suporte a Vercel Serverless Function (/api/chat) com sigilo total da chave Groq
+ * e motor local inteligente com zero travamentos.
  * ============================================================================
  */
 
 const TREEBOT_CONFIG = {
-    // Endpoint backend seguro (/api/chat via Vercel Serverless Function).
-    // A chave secreta GROQ_API_KEY fica 100% no servidor da Vercel, nunca visível ao navegador.
+    // Rota backend da Vercel Serverless Function (relativa para evitar problemas de CORS/domínio)
     API_ENDPOINT: window.ROCKY_TREE_CONFIG?.apiEndpoint || "/api/chat",
     WHATSAPP_NUMBER: "5575998729593",
     FOUNDERS: "Ana Peixoto e Mikaell Rocha",
@@ -62,24 +61,34 @@ const TREEBOT_KNOWLEDGE_BASE = [
     }
 ];
 
-// Event Listeners globais
-document.addEventListener("DOMContentLoaded", () => {
+// Inicialização segura de listeners (funciona mesmo se o DOM já carregou)
+function initTreebotListeners() {
     const chatInput = document.getElementById("treebot-input");
     const sendBtn = document.getElementById("treebot-send-btn");
 
-    if (chatInput && sendBtn) {
+    if (chatInput && !chatInput.dataset.listenersAttached) {
+        chatInput.dataset.listenersAttached = "true";
         chatInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleTreebotSend();
             }
         });
+    }
 
+    if (sendBtn && !sendBtn.dataset.listenersAttached) {
+        sendBtn.dataset.listenersAttached = "true";
         sendBtn.addEventListener("click", () => {
             handleTreebotSend();
         });
     }
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTreebotListeners);
+} else {
+    initTreebotListeners();
+}
 
 function toggleChat() {
     const chatWindow = document.getElementById("chatbot-window");
@@ -100,7 +109,9 @@ function toggleChat() {
             iconClose.classList.add("block");
         }
         const input = document.getElementById("treebot-input");
-        if (input) input.focus();
+        if (input) {
+            setTimeout(() => input.focus(), 100);
+        }
     } else {
         chatWindow.classList.add("hidden");
         chatWindow.classList.remove("flex");
@@ -132,11 +143,12 @@ function handleTreebotSend() {
 function appendTreebotUserMsg(text) {
     const msgs = document.getElementById("chat-messages");
     if (!msgs) return;
-    msgs.innerHTML += `
+    const html = `
         <div class="self-end bg-[#ccff00] text-[#06080c] font-semibold rounded-2xl rounded-tr-xs px-4 py-2.5 max-w-[85%] text-xs md:text-sm shadow-[0_0_15px_rgba(204,255,0,0.15)] animate-[fadeIn_0.2s_ease-out]">
             ${escapeTreebotHtml(text)}
         </div>
     `;
+    msgs.insertAdjacentHTML("beforeend", html);
     msgs.scrollTop = msgs.scrollHeight;
 }
 
@@ -144,19 +156,21 @@ function appendTreebotBotMsg(text, extraHtml = "") {
     const msgs = document.getElementById("chat-messages");
     if (!msgs) return;
     const formatted = formatTreebotMarkdown(text);
-    msgs.innerHTML += `
+    const html = `
         <div class="bg-[#111622] border border-white/10 rounded-2xl rounded-tl-xs p-3.5 text-gray-200 max-w-[90%] shadow-lg text-xs md:text-sm animate-[fadeIn_0.2s_ease-out] space-y-2.5">
             <div class="leading-relaxed">${formatted}</div>
-            ${extraHtml}
+            ${extraHtml || ""}
         </div>
     `;
+    msgs.insertAdjacentHTML("beforeend", html);
     msgs.scrollTop = msgs.scrollHeight;
 }
 
 function showTreebotTyping() {
     const msgs = document.getElementById("chat-messages");
     if (!msgs) return;
-    msgs.innerHTML += `
+    hideTreebotTyping();
+    const html = `
         <div id="treebot-typing" class="bg-[#111622] border border-white/10 rounded-2xl rounded-tl-xs px-3.5 py-2.5 text-[#ccff00] max-w-[65%] shadow-sm flex items-center gap-1.5 text-xs">
             <span class="w-1.5 h-1.5 rounded-full bg-[#ccff00] animate-bounce"></span>
             <span class="w-1.5 h-1.5 rounded-full bg-[#ccff00] animate-bounce [animation-delay:0.15s]"></span>
@@ -164,6 +178,7 @@ function showTreebotTyping() {
             <span class="text-[11px] text-gray-400 ml-1.5 font-medium">Digitando...</span>
         </div>
     `;
+    msgs.insertAdjacentHTML("beforeend", html);
     msgs.scrollTop = msgs.scrollHeight;
 }
 
@@ -207,12 +222,12 @@ async function sendTreebotMessage(userText) {
     showTreebotTyping();
 
     let aiReply = null;
-    let customCta = null;
+    let matchedItem = null;
 
-    // Tentativa de consulta via Backend Vercel Serverless Function (/api/chat)
     try {
+        // Tentativa de consulta via Backend Vercel Serverless Function (/api/chat)
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 6500); // 6.5s timeout
 
         const response = await fetch(TREEBOT_CONFIG.API_ENDPOINT, {
             method: "POST",
@@ -231,10 +246,11 @@ async function sendTreebotMessage(userText) {
             aiReply = data.reply || data.choices?.[0]?.message?.content || null;
         }
     } catch {
-        // Falha de rede ou proxy não configurado - ativa mecanismo resiliente sem expor erros
+        // Falha de rede ou backend em deploy/local - segue para o motor resiliente
+    } finally {
+        hideTreebotTyping();
+        treebotWaiting = false;
     }
-
-    let matchedItem = null;
 
     // Se o backend remoto não responder, usa o motor local de respostas imediatas
     if (!aiReply) {
@@ -247,8 +263,6 @@ async function sendTreebotMessage(userText) {
     }
 
     treebotMessages.push({ role: "assistant", content: aiReply });
-    hideTreebotTyping();
-    treebotWaiting = false;
 
     // Só gera a ação de WhatsApp caso seja realmente oportuno/necessário
     const extraBtn = getTreebotWhatsAppButton(aiReply, userText, matchedItem);
@@ -316,3 +330,9 @@ function escapeTreebotHtml(text) {
     };
     return String(text).replace(/[&<>"']/g, (m) => map[m]);
 }
+
+// Exportações explícitas para garantir compatibilidade com eventos inline
+window.toggleChat = toggleChat;
+window.sendTreebotQuickMessage = sendTreebotQuickMessage;
+window.handleTreebotSend = handleTreebotSend;
+window.sendTreebotMessage = sendTreebotMessage;

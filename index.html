@@ -1006,8 +1006,9 @@
             <!-- Input de Mensagem -->
             <div class="p-3 bg-[#06080c] border-t border-white/10 flex items-center gap-2">
                 <input type="text" id="treebot-input" placeholder="Digite sua mensagem ou dúvida..." 
-                       class="flex-1 bg-[#111622] border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#ccff00] transition-colors">
-                <button id="treebot-send-btn" 
+                       class="flex-1 bg-[#111622] border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#ccff00] transition-colors"
+                       onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();handleTreebotSend();}">
+                <button id="treebot-send-btn" onclick="handleTreebotSend()"
                         class="w-9 h-9 rounded-xl bg-[#ccff00] hover:bg-white text-[#06080c] flex items-center justify-center font-bold transition-all shadow-[0_0_15px_rgba(204,255,0,0.3)]" aria-label="Enviar">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                 </button>
