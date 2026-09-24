@@ -17,10 +17,10 @@ const TREEBOT_CONFIG = {
     LOCATION: "Santo Antônio de Jesus - BA (Atendimento Presencial e 100% Remoto para todo o Brasil)"
 };
 
-// Prompt de sistema base (utilizado quando conectado ao proxy de IA)
-const TREEBOT_SYSTEM_PROMPT = `Você é o TreeBot 🌲, o assistente virtual inteligente da Rocky Tree Technologies.
-Seu objetivo é ser simpático, direto ao ponto, técnico-minimalista e focado em apresentar os serviços da empresa e direcionar orçamentos para o WhatsApp oficial da Ana Peixoto e Mikaell Rocha.
-Mantenha respostas concisas (máximo 2 a 3 frases) e com foco em agilidade.`;
+// Prompt de sistema base (utilizado quando conectado ao backend de IA)
+const TREEBOT_SYSTEM_PROMPT = `Você é o TreeBot 🌲, assistente virtual da Rocky Tree Technologies.
+Seu objetivo é ser simpático, direto ao ponto e técnico-minimalista. Esclareça dúvidas sobre os serviços da empresa com concisão (máximo 2 a 3 frases).
+Converse com naturalidade com o usuário. Só encaminhe ou sugira contato no WhatsApp quando for realmente necessário (ex: pedido de orçamento formal, intenção de fechar negócio ou solicitação de contato humano direto).`;
 
 // Histórico de mensagens do chat
 let treebotMessages = [
@@ -31,39 +31,34 @@ let treebotWaiting = false;
 // Base de conhecimento local instantânea (Garante 100% de funcionamento offline/resiliente)
 const TREEBOT_KNOWLEDGE_BASE = [
     {
-        keywords: ["landing page", "site", "criar site", "pagina", "desenvolvimento web", "preco site", "quanto custa um site", "orcamento site", "loja virtual", "one page"],
-        reply: "Desenvolvemos **Landing Pages de alta conversão** (entre **R$ 400 e R$ 800**, com 50% OFF de lançamento!) e **Sites Institucionais completos** (de **R$ 1.800 a R$ 2.800**). 🚀\n\nQual é o objetivo principal do seu novo site?",
-        cta: "Quero solicitar um orçamento para Desenvolvimento de Site."
+        keywords: ["landing page", "site", "criar site", "pagina", "desenvolvimento web", "preco site", "quanto custa um site", "loja virtual", "one page"],
+        reply: "Desenvolvemos **Landing Pages de alta conversão** (entre **R$ 400 e R$ 800**, com 50% OFF de lançamento!) e **Sites Institucionais completos** (de **R$ 1.800 a R$ 2.800**). 🚀\n\nQual é o objetivo principal do seu novo projeto?"
     },
     {
         keywords: ["suporte", "suporte ti", "redes", "servidor", "chamado", "manutencao", "plano mensal", "contrato ti", "ti para empresas"],
-        reply: "Oferecemos **Chamados Avulsos** (R$ 120 a R$ 180) e **Planos Mensais de Suporte de TI** a partir de **R$ 350/mês** para empresas, com SLA prioritário e gestão completa da infraestrutura.",
-        cta: "Gostaria de saber mais sobre os planos de Suporte de TI para minha empresa."
+        reply: "Oferecemos **Chamados Avulsos** (R$ 120 a R$ 180) e **Planos Mensais de Suporte de TI** a partir de **R$ 350/mês** para empresas, com SLA prioritário e gestão completa da infraestrutura. Você precisa de atendimento pontual ou mensal?"
     },
     {
         keywords: ["pc gamer", "hardware", "formatacao", "formatar", "limpeza", "pasta termica", "microsolda", "placa", "reparo", "montagem", "workstation"],
-        reply: "Fazemos montagem especializada de **PC Gamer e Workstations** (mão de obra R$ 200 a R$ 350), formatação limpa (R$ 100 a R$ 150), limpeza técnica com troca de pasta térmica e reparos em placas eletrônicas.",
-        cta: "Preciso de manutenção/montagem de Hardware ou PC Gamer."
+        reply: "Fazemos montagem especializada de **PC Gamer e Workstations** (mão de obra R$ 200 a R$ 350), formatação limpa (R$ 100 a R$ 150), limpeza técnica com troca de pasta térmica e reparos em placas eletrônicas."
     },
     {
         keywords: ["design", "logo", "logotipo", "identidade visual", "artes", "redes sociais", "branding", "marca", "manual da marca"],
-        reply: "Criamos **Logotipos profissionais** (R$ 150 a R$ 200), **Identidade Visual completa** (R$ 200 a R$ 500) e pacotes mensais de artes para redes sociais a partir de R$ 150/mês.",
-        cta: "Quero criar ou modernizar a Identidade Visual da minha marca."
+        reply: "Criamos **Logotipos profissionais** (R$ 150 a R$ 200), **Identidade Visual completa** (R$ 200 a R$ 500) e pacotes mensais de artes para redes sociais a partir de R$ 150/mês. Você já tem uma ideia em mente?"
     },
     {
         keywords: ["quem sao", "fundador", "fundadores", "donos", "criadores", "ana", "mikaell", "sobre", "historia"],
-        reply: "A Rocky Tree Technologies foi fundada por **Ana Peixoto** e **Mikaell Rocha**, especialistas em Redes, Infraestrutura e Desenvolvimento. Nosso foco é entregar soluções sólidas do hardware à nuvem.",
-        cta: "Gostaria de agendar uma reunião com a equipe da Rocky Tree."
+        reply: "A Rocky Tree Technologies foi fundada por **Ana Peixoto** e **Mikaell Rocha**, especialistas em Redes, Infraestrutura e Desenvolvimento. Nosso foco é entregar soluções sólidas do hardware à nuvem."
     },
     {
         keywords: ["onde ficam", "endereco", "cidade", "local", "santo antonio", "saj", "remoto", "presencial", "bahia"],
-        reply: "Nossa sede fica em **Santo Antônio de Jesus - BA**, onde realizamos atendimentos presenciais, e atendemos projetos de Desenvolvimento Web e Consultoria **100% de forma remota para todo o Brasil**.",
-        cta: "Gostaria de verificar a disponibilidade para meu atendimento."
+        reply: "Nossa sede fica em **Santo Antônio de Jesus - BA**, onde realizamos atendimentos presenciais, e atendemos projetos de Desenvolvimento Web e Consultoria **100% de forma remota para todo o Brasil**."
     },
     {
-        keywords: ["whatsapp", "contato", "telefone", "falar", "humano", "atendente", "orcamento", "cotacao", "conversar"],
-        reply: "Com certeza! Você pode falar diretamente com a Ana Peixoto ou com o Mikaell Rocha no nosso WhatsApp oficial pelo número **(75) 99872-9593** ou clicar no botão abaixo:",
-        cta: "Olá, equipe Rocky Tree! Estava conversando com o TreeBot e gostaria de falar com um especialista."
+        keywords: ["whatsapp", "zap", "whats", "contato", "telefone", "falar", "humano", "atendente", "orcamento", "cotacao", "fechar", "contratar", "agendar", "conversar"],
+        reply: "Com certeza! Para formalizar seu orçamento ou falar diretamente com a Ana Peixoto e o Mikaell Rocha, você pode nos chamar no WhatsApp:",
+        directToWhatsApp: true,
+        cta: "Olá, equipe Rocky Tree! Estava conversando com o TreeBot e gostaria de solicitar um orçamento / agendar atendimento."
     }
 ];
 
@@ -239,15 +234,15 @@ async function sendTreebotMessage(userText) {
         // Falha de rede ou proxy não configurado - ativa mecanismo resiliente sem expor erros
     }
 
+    let matchedItem = null;
+
     // Se o backend remoto não responder, usa o motor local de respostas imediatas
     if (!aiReply) {
-        const localMatch = findBestLocalKnowledgeMatch(userText);
-        if (localMatch) {
-            aiReply = localMatch.reply;
-            customCta = localMatch.cta;
+        matchedItem = findBestLocalKnowledgeMatch(userText);
+        if (matchedItem) {
+            aiReply = matchedItem.reply;
         } else {
-            aiReply = "Posso te ajudar com **Desenvolvimento Web**, **Suporte de TI & Redes**, **Montagem/Reparo de Hardware** ou **Design Gráfico**. Se preferir, podemos detalhar seu projeto diretamente pelo WhatsApp!";
-            customCta = `Olá, Rocky Tree! Gostaria de tirar dúvidas sobre o serviço: "${userText}"`;
+            aiReply = "Posso esclarecer suas dúvidas sobre **Desenvolvimento Web**, **Suporte de TI & Redes**, **Montagem/Reparo de Hardware** ou **Design Gráfico**. Como podemos te ajudar?";
         }
     }
 
@@ -255,23 +250,49 @@ async function sendTreebotMessage(userText) {
     hideTreebotTyping();
     treebotWaiting = false;
 
-    const extraBtn = getTreebotWhatsAppButton(aiReply, userText, customCta);
+    // Só gera a ação de WhatsApp caso seja realmente oportuno/necessário
+    const extraBtn = getTreebotWhatsAppButton(aiReply, userText, matchedItem);
     appendTreebotBotMsg(aiReply, extraBtn);
 }
 
-function getTreebotWhatsAppButton(aiText, userText, preferredCta) {
-    const defaultMsg = preferredCta || `Olá, Rocky Tree! Conversei com o TreeBot e gostaria de agendar uma consultoria / solicitar um orçamento.`;
+/**
+ * Avalia se o contexto exige o direcionamento para o WhatsApp
+ */
+function getTreebotWhatsAppButton(aiText, userText, matchedItem) {
+    const combined = (userText + " " + aiText).toLowerCase();
+
+    // Palavras que indicam necessidade real de transição para atendimento humano/WhatsApp
+    const handoffTriggers = [
+        "whatsapp", "zap", "whats", "telefone", "contato", "falar com",
+        "atendente", "humano", "orcamento", "orçamento", "cotacao", "cotação",
+        "fechar", "contratar", "agendar", "proposta", "comprar", "preco final",
+        "preço final", "chamar no", "direto no whatsapp", "abrir conversa", "fechar projeto"
+    ];
+
+    const isHandoverTriggered = handoffTriggers.some(trigger => combined.includes(trigger));
+    const isDirectHandoff = matchedItem?.directToWhatsApp === true;
+
+    // Se não for necessário, NÃO exibe nenhum botão
+    if (!isHandoverTriggered && !isDirectHandoff) {
+        return "";
+    }
+
+    const defaultMsg = matchedItem?.cta || `Olá, Rocky Tree! Conversei com o TreeBot sobre "${userText}" e gostaria de continuar o atendimento.`;
     return renderWhatsAppCallToAction(defaultMsg);
 }
 
+/**
+ * Renderiza um botão de ação elegante, discreto e minimalista
+ */
 function renderWhatsAppCallToAction(msg) {
     const encoded = encodeURIComponent(msg);
     return `
         <div class="pt-2">
             <a href="https://wa.me/${TREEBOT_CONFIG.WHATSAPP_NUMBER}?text=${encoded}" target="_blank" 
-               class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#ccff00] hover:bg-white text-[#06080c] font-bold rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(204,255,0,0.25)] hover:scale-[1.01]">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.124.557 4.122 1.54 5.874l-1.636 5.975 6.115-1.604c1.691.92 3.619 1.447 5.981 1.447 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
-                Falar no WhatsApp com a Equipe
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ccff00]/10 hover:bg-[#ccff00] border border-[#ccff00]/30 hover:border-[#ccff00] text-[#ccff00] hover:text-[#06080c] font-semibold rounded-lg text-xs transition-all duration-200 shadow-sm">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.124.557 4.122 1.54 5.874l-1.636 5.975 6.115-1.604c1.691.92 3.619 1.447 5.981 1.447 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/></svg>
+                <span>Falar no WhatsApp</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>
         </div>
     `;
