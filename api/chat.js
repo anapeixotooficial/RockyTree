@@ -24,8 +24,9 @@ async function handler(req, res) {
         return res.status(405).json({ error: "Método não permitido" });
     }
 
-    // Leitura da chave secreta configurada no painel da Vercel (Environment Variables)
-    const apiKey = process.env.GROQ_API_KEY;
+    // Leitura e sanitização da chave secreta configurada no painel da Vercel
+    const rawKey = process.env.GROQ_API_KEY || process.env.groq_api_key || "";
+    const apiKey = rawKey.trim().replace(/^["']|["']$/g, "");
 
     if (!apiKey) {
         console.warn("TreeBot API: GROQ_API_KEY não foi encontrada nas Environment Variables da Vercel.");
@@ -53,34 +54,69 @@ Esclareça as dúvidas sobre Desenvolvimento Web/Landing Pages, Infraestrutura d
 Converse normalmente com o usuário. Só sugira ou direcione para o WhatsApp quando for realmente necessário (por exemplo, quando o cliente pedir orçamento formal, demonstrar intenção de fechar negócio ou solicitar contato humano direto).`
         };
 
-        // Chamada confidencial para a Groq (oculta no backend)
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
-                messages: [systemPrompt, ...messages.slice(-6)],
-                temperature: 0.5,
-                max_tokens: 250
-            })
-        });
+        // Modelos candidatos na Groq (ordenados por prioridade e disponibilidade na API de desenvolvedor)
+        // Nota: openai/gpt-oss-20b e openai/gpt-oss-120b são os modelos ativos de produção para desenvolvedores
+        const candidateModels = [
+            process.env.GROQ_MODEL,
+            "openai/gpt-oss-20b",
+            "openai/gpt-oss-120b",
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant"
+        ].filter(Boolean);
 
-        if (!response.ok) {
-            const errData = await response.text();
-            console.error("Erro da Groq API:", errData);
-            return res.status(response.status).json({
-                error: "Falha na comunicação com o provedor de IA"
-            });
+        let lastStatus = 500;
+        let lastError = null;
+
+        for (const model of candidateModels) {
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [systemPrompt, ...messages.slice(-6)],
+                        temperature: 0.5,
+                        max_tokens: 250
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const reply = data.choices?.[0]?.message?.content || "Como posso ajudar com o seu projeto?";
+                    return res.status(200).json({ reply, modelUsed: model });
+                }
+
+                lastStatus = response.status;
+                const errText = await response.text();
+                console.warn(`Groq retornou erro com modelo ${model} (status ${response.status}):`, errText);
+
+                try {
+                    lastError = JSON.parse(errText);
+                } catch (_) {
+                    lastError = errText;
+                }
+
+                // Se o modelo não foi encontrado ou foi descontinuado (404), tenta o próximo candidato
+                if (response.status === 404) {
+                    continue;
+                }
+
+                // Para outros erros (ex: 401 Chave inválida), não adianta tentar outro modelo
+                break;
+            } catch (err) {
+                console.error(`Exceção ao chamar Groq com ${model}:`, err);
+                lastError = err.message || "Falha de conexão";
+                break;
+            }
         }
 
-        const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content || "Como posso ajudar com o seu projeto?";
-
-        // Devolve apenas o texto limpo para o frontend
-        return res.status(200).json({ reply });
+        return res.status(lastStatus >= 400 && lastStatus < 600 ? lastStatus : 502).json({
+            error: "Falha na comunicação com o provedor de IA",
+            details: lastError
+        });
 
     } catch (error) {
         console.error("Erro interno no /api/chat:", error);
