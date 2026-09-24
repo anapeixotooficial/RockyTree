@@ -1,4 +1,4 @@
-# 🌳 Rocky Tree Technologies
+# 🌳 Rocky Tree Technologies - Site Institucional
 
 <div align="center">
   <h3><strong>Soluções Sólidas em Tecnologia.</strong></h3>
@@ -8,44 +8,49 @@
 <br>
 
 ## 🚀 Sobre o Projeto
-A **Landing Page Oficial** da Rocky Tree Technologies foi desenvolvida para transmitir extrema segurança, robustez e alta tecnologia. A interface possui um *Dark Mode* sofisticado, micro-interações, efeitos de *Glassmorphism* (vidro fosco) e integração nativa com automação de orçamentos via WhatsApp.
 
-Este site não é apenas um cartão de visitas, é uma ferramenta de alta conversão!
-
----
-
-## ✨ Principais Funcionalidades
-
-- 🎨 **UI/UX Premium:** Design moderno com paleta de cores tecnológica (*Cyberpunk Green* & *Cyber Blue*) e tipografia moderna.
-- 🌌 **Dinamismo Extremo:** Fundo com partículas interativas (`particles.js`), efeito de digitação e animações de scroll (`AOS`).
-- 📱 **100% Responsivo:** Experiência otimizada, adaptável perfeitamente do celular ao monitor Ultrawide.
-- 💬 **Orçamentos Inteligentes:** Geração de formulários dinâmicos via Modais de interface avançada, que pré-preenchem pedidos formatados direto para o WhatsApp.
-- 🤖 **TreeBot Integrado:** Assistente virtual programado para sanar dúvidas rapidamente e redirecionar suporte técnico.
+Apresentação Digital oficial da **Rocky Tree Technologies**. Desenvolvido sob a arquitetura **One Page (Single Page)** de rolagem contínua com elementos de **Landing Page de Alta Conversão**, o site foi projetado sob os pilares do **Minimalismo Tecnológico (Tech Minimalist)**, **Dark UI** sofisticada e **High-Contrast Neon Accents** (Verde-Limão Neon `#ccff00`).
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🎨 Identidade Visual e Estilo (UI/UX)
 
-- **HTML5:** Estrutura totalmente semântica e acessível.
-- **Tailwind CSS (via CDN):** Estilização pesada, uso de variáveis globais de design e cores personalizadas da marca.
-- **JavaScript Vanilla:** Lógica de negócio, gerenciamento dos modais, chatbot interativo e comportamentos da página.
-- **Bibliotecas Extras:**
-  - [Particles.js](https://vincentgarreau.com/particles.js/) - Background animado simulando "nós de redes de computadores".
-  - [AOS (Animate On Scroll)](https://michalsnik.github.io/aos/) - Animações suaves ativadas pela rolagem do mouse.
-  - [Vanilla-Tilt.js](https://micku7zu.github.io/vanilla-tilt.js/) - Efeito 3D interativo de iluminação nos elementos (glass-cards).
+- **Dark UI:** Fundos em tons profundos de grafite e preto chumbo (`#06080c`, `#0b0f17`, `#111622`), transmitindo modernidade, elegância e robustez.
+- **High-Contrast Neon Accents:** Cor de destaque única em verde-limão neon elétrico (`#ccff00`), direcionando a atenção do visitante para botões de ação (CTAs), divisores e destaques lógicos.
+- **Tech Minimalist:** Tipografia geométrica sem serifa (`Space Grotesk` para títulos e `Inter` para leitura), ícones em formato de linha fina contornada (line-art SVGs) e blocos visuais bem definidos sem poluição visual.
 
 ---
 
-## 👥 Quem Somos
+## ✨ Estrutura One Page
 
-A **Rocky Tree** é liderada por especialistas com domínio de ponta a ponta na área de TI:
-- **Ana Peixoto** - Especialista em Tecnologia e Redes.
-- **Mikaell Rocha** - Especialista em Infraestrutura, Redes de Computadores e Desenvolvimento.
+1. **Apresentação & Hero:** Proposta de valor clara, efeito de digitação, métricas de confiabilidade e chamadas para "Ver Portfólio" e "Solicitar Orçamento".
+2. **Sobre Nós:** Apresentação da marca fundada por **Ana Peixoto** e **Mikaell Rocha**, diferenciais de visão sistêmica do hardware ao software, atendimento local em Santo Antônio de Jesus (BA) e 100% remoto para todo o Brasil.
+3. **Serviços Oferecidos:** 4 blocos técnicos modulares (Desenvolvimento Web, Infraestrutura & Redes, Hardware & Reparos, Design & Identidade) com modais interativos de valores detalhados.
+4. **Portfólio Institucional:** Vitrine com cases práticos de projetos entregues e botão de solicitação com contexto direto no WhatsApp.
+5. **Modelos de Atendimento:** Comparativo entre demandas pontuais (Projetos Avulsos) e parcerias com SLA (Assinaturas Mensais).
+6. **Contato & Orçamento Express:** Formulário rápido que pré-formata o pedido do cliente e abre direto o WhatsApp oficial da equipe: **(75) 99872-9593**.
 
-Sediados em Santo Antônio de Jesus (BA) com atendimento local, mas atuando com desenvolvimento e consultoria de forma **100% remota**.
+---
+
+## 🤖 TreeBot IA 3.0 & Arquitetura Segura da API (Groq)
+
+Para preservar o **sigilo absoluto** da chave de API `GROQ_API_KEY` (evitando exposição no navegador e vazamento em repositórios públicos):
+
+1. **Sigilo de Credenciais (Vercel Serverless Function):**
+   - O projeto utiliza a função backend [`api/chat.js`](api/chat.js) nativa da Vercel.
+   - A `GROQ_API_KEY` é configurada nas **Environment Variables** da Vercel, mantendo a chave 100% no servidor sem qualquer exposição no navegador.
+2. **Motor Resiliente Local (Fail-Safe Instantâneo):**
+   - Caso o backend esteja offline ou em configuração, o `treebot.js` possui um motor de resolução de intenções local integrado. Ele responde instantaneamente a dúvidas sobre preços, serviços, prazos e direciona o usuário para o WhatsApp oficial com 100% de disponibilidade.
+
+---
+
+## 👥 Liderança Técnica
+
+- **Ana Peixoto** - Especialista em Tecnologia, Redes de Computadores e Gestão de Sistemas.
+- **Mikaell Rocha** - Especialista em Infraestrutura, Redes, Hardware e Desenvolvimento Full-Stack.
 
 ---
 
 <div align="center">
-  <p>Construído com extrema dedicação e tecnologia por <a href="https://github.com/anapeixotooficial">Rocky Tree Technologies</a>.</p>
+  <p>Construído por <a href="https://github.com/anapeixotooficial">Rocky Tree Technologies</a> &copy; 2026.</p>
 </div>
